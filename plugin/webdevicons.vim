@@ -550,6 +550,20 @@ function! s:DevIconsGetArtifactFix()
 endfunction
 
 " scope: public
+" get file type symbols of multiple files
+" items is list of { 'file': string, 'isdir': boolean[optional] }
+function! WebDevIconsGetFileTypeSymbolList(items)
+  let symbols = []
+  for item in a:items
+    let isdir = get(item, 'isdir', 0)
+    let symbol = WebDevIconsGetFileTypeSymbol(item['file'], isdir)
+    call add(symbols, symbol)
+  endfor
+  return symbols
+endfunction
+
+
+" scope: public
 function! WebDevIconsGetFileFormatSymbol(...)
   let fileformat = ''
   let bomb = ''

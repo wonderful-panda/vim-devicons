@@ -12,7 +12,9 @@ class Filter(Base):
 		self.description = 'add devicons in front of candidates'
 
 	def filter(self, context):
-		for candidate in context['candidates']:
+		items = []
+		candidates = context['candidates']
+		for candidate in candidates:
 
 			if 'bufnr' in candidate:
 				bufname = self.vim.funcs.bufname(candidate['bufnr'])
@@ -20,8 +22,11 @@ class Filter(Base):
 			elif 'word' in candidate and 'action__path' in candidate:
 				filename = candidate['word']
 
-			icon = self.vim.funcs.WebDevIconsGetFileTypeSymbol(
-				filename, isdir(filename))
+			items.append({ 'file': filename, 'isdir': isdir(filename) })
+
+		icons = self.vim.funcs.WebDevIconsGetFileTypeSymbolList(items)
+
+		for candidate, icon in zip(candidates, icons):
 
 			# Customize output format if not done already.
 			if icon not in candidate.get('abbr', '')[:10]:
